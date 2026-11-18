@@ -1,39 +1,63 @@
-# Hardware and storage
+# Hardware & storage design
 
-## Recorded hardware
+[← Project overview](README.md)
 
-| Item | Available project record |
+## Reusing the hardware
+
+The project turns a Samsung Galaxy Book Flex into a headless Ubuntu NAS and application host. This gives existing hardware a new role while creating a practical environment for Linux and infrastructure learning.
+
+| Component | Project record |
 | --- | --- |
-| Platform | Samsung Galaxy Book Flex |
-| CPU | Intel Core i5 mentioned in prior discussion; exact model unverified |
-| Memory | 8 GB mentioned in prior discussion; not independently measured |
-| OS | Ubuntu Server; release unverified |
-| Disk | Capacity, model, health, and physical layout unverified |
-| Operation | Repurposed as a headless NAS and application host |
+| Host | Samsung Galaxy Book Flex |
+| CPU | Intel Core i5 mentioned in the discussion; exact model to verify |
+| RAM | 8 GB mentioned in the discussion; inventory confirmation pending |
+| Operating system | Ubuntu Server; exact release to record |
+| Physical storage | Disk model, capacity, and health to verify |
+| Operating mode | Headless NAS and application host |
 
-No serial numbers, device UUIDs, MAC addresses, or host identifiers are published.
+No device serial numbers, UUIDs, MAC addresses, or private host identifiers are published.
 
-## Storage responsibilities
+## Storage by responsibility
 
-The prior summary describes LVM volumes for the OS, Docker, NAS, and websites. This is a functional map, not a claim about exact mount points:
+```mermaid
+flowchart TB
+    L["LVM storage organization"] --> O["Operating system"]
+    L --> D["Docker application state"]
+    L --> N["NAS user files"]
+    L --> W["Website data"]
+```
 
-| Responsibility | Data to protect |
-| --- | --- |
-| OS | System configuration and recovery notes |
-| Docker | Compose definitions and persistent application state |
-| NAS | User files and share permissions |
-| Websites | Site content and deployment state |
+*Logical roles described in the project summary. This is not an exact partition map.*
 
-The paths in examples are generic substitutes. Do not infer partition sizes or filesystem types from them.
+| Responsibility | What belongs here | Why the distinction matters |
+| --- | --- | --- |
+| OS | Host software and system configuration | Application data should not unexpectedly consume the root filesystem |
+| Docker | Persistent application state and configuration | Recreating a container is different from recovering its data |
+| NAS | Shared user files and permissions | File ownership and access need deliberate management |
+| Websites | Site content and deployment state | Website recovery should include content, not just the server image |
 
-## Private verification checklist
+Actual logical-volume names, filesystem types, sizes, and mount points remain private or unverified. Example paths are generic substitutes.
 
-Inspect the host locally before changing storage. Read-only tools such as `lsblk -f`, `df -hT`, `pvs`, `vgs`, `lvs`, and `findmnt` can establish the actual layout. Their output may contain private identifiers; retain it privately and publish only a manually sanitized summary.
+## Inventory before changing storage
 
-Confirm persistent mounts after reboot, available capacity, application ownership, and that container data lands on the intended filesystem. If a mount is absent, stop affected writes before the application fills the OS filesystem.
+Read-only inspection can establish the real layout:
 
-Do not resize, format, repartition, or recursively change permissions based on this document. Those actions require a verified inventory and a tested backup.
+| Inspect | Tool | What to establish |
+| --- | --- | --- |
+| Block devices and filesystems | `lsblk -f` | Which filesystems belong to which devices |
+| Filesystem usage | `df -hT` | Capacity and filesystem type |
+| LVM organization | `pvs`, `vgs`, `lvs` | Physical volumes, volume groups, and logical volumes |
+| Mounts | `findmnt` | Whether data is mounted at the intended path |
 
-## Reliability work still to validate
+Keep raw output private because it may contain identifiers. Do not resize, format, repartition, or recursively change ownership based on this public document.
 
-Check ventilation, temperature, battery condition, power-loss recovery, and lid/suspend behavior. Record a backup schedule and perform a restore test. LVM separation and a laptop battery do not establish backup or high availability.
+## Reliability considerations
+
+- Confirm persistent mounts before starting applications after a reboot.
+- If a mount is missing, stop affected writes before data fills the OS filesystem.
+- Check ventilation, temperature, battery condition, and lid/suspend behavior.
+- Keep an independent backup and test recovery.
+
+LVM separation is organization, not redundancy. A laptop battery also does not establish a tested backup or power-recovery strategy.
+
+[Recovery roadmap →](roadmap.md) · [Private inventory worksheet →](deployment-worksheet.md)

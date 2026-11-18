@@ -1,28 +1,43 @@
-# Architecture
+# Architecture & access boundaries
 
-## Host and service layers
+[← Project overview](README.md)
 
-A repurposed laptop runs Ubuntu Server as the host. The recorded design assigns separate LVM storage responsibilities to the operating system, Docker, NAS data, and websites. Exact logical-volume names and capacities are not available in the retrieved project record.
+![Conceptual access and storage architecture](architecture.svg)
 
-Docker hosts application workloads. Dockge provides a graphical interface for Compose stacks. Cockpit provides host administration, while Homepage presents links and selected service status information. Samba serves network files; FileBrowser Quantum provides browser-based file access.
+## Three paths, one host
 
-## Access paths
-
-| Client | Path | Intended scope |
+| Path | Sequence | Purpose |
 | --- | --- | --- |
-| Administrator | Tailscale to host administration interfaces | Private management |
-| Trusted LAN user | Samba to NAS data | Authorized file shares |
-| Authorized remote web user | Cloudflare edge, Access, Tunnel, application login | Protected browser applications |
-| Portfolio visitor | Cloudflare edge and Tunnel to website | Public website only |
+| Private administration | Administrator → Tailscale → Cockpit / Dockge / SSH | Manage the host and applications |
+| Trusted file sharing | Authorized LAN client → Samba → NAS files | Use network shares |
+| Browser access | Visitor → Cloudflare edge → selected route → Tunnel → web application | Reach a public site or a protected application |
 
-Cloudflare Access and the application account are separate controls. Passing the edge login must not automatically grant unrestricted filesystem access.
+Protected web routes include Cloudflare Access before the origin application. The portfolio's public route is separate. FileBrowser still needs appropriate application accounts and file permissions.
 
-## Boundaries to validate
+## Host organization
 
-The project summary reports remote access and Access authentication working. The exact firewall rules, bind addresses, origin bypass prevention, and per-user permissions were not independently inspected. Verify them before describing the installation as hardened.
+Ubuntu Server provides the host environment. Docker runs application workloads; Dockge manages Compose stacks. Cockpit provides host administration, and Homepage provides service navigation.
 
-Keep management interfaces off public routes. Give each application only the storage it needs. Docker management access is privileged; access to Dockge and the Docker API deserves the same care as host administration.
+The storage design described in the project separates OS, Docker, NAS, and website responsibilities using LVM. Exact volume names, capacities, and filesystem types are not reproduced.
 
-## Failure domains
+## Application boundaries
 
-One physical host means host failure can interrupt storage and hosted services together. Logical-volume separation does not provide hardware redundancy or an independent backup. Internet and Cloudflare availability affect tunneled access; retain a tested private/local recovery path.
+- **FileBrowser Quantum** accesses the NAS files it is configured to serve.
+- **Samba** exposes authorized shares to trusted network clients.
+- **Homepage** links to services; the diagram does not imply it mounts NAS files.
+- **The portfolio** serves website content; it is not shown with access to user files.
+- **Dockge and the Docker API** belong to the privileged administration boundary.
+
+The drawing presents logical roles, not a packet-level diagram, a live policy export, or an exact container deployment topology. Application-to-storage links represent purpose; actual mount scope must be checked privately.
+
+## Failure and recovery considerations
+
+A single host ties together storage, management, and hosted applications. A host outage can affect all of them. LVM separates responsibilities but does not create an independent backup or redundant hardware.
+
+Tunneled web access depends on the origin, connector, Internet path, and edge service. Retain a tested local/private recovery path. Storage mounts and application state must be restored before bringing affected services back.
+
+## Design checks
+
+Confirm that administrative services are reachable only by intended users, protected applications cannot be reached through a bypass route, and each application receives only the data it needs. These checks are [roadmap validation tasks](roadmap.md), not claims of completed auditing.
+
+[Networking details →](networking.md) · [Storage design →](hardware-and-storage.md)

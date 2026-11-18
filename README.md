@@ -1,73 +1,82 @@
+<p align="center">
+  <img src="homelab-cover.png" alt="Concept illustration of a laptop repurposed for file storage, containers, and remote access" width="100%">
+</p>
+
 # Pawan HomeLab & NAS
+### Turning an everyday laptop into a practical Linux server.
 
-An Ubuntu Server HomeLab built by repurposing a Samsung Galaxy Book Flex into a headless NAS, container host, and self-hosted website platform.
+**File storage · Containerized applications · Browser-based management · Remote access**
 
-The project brings storage, web-based administration, and remote access together on existing hardware. It documents practical Linux administration, container operations, network access design, and troubleshooting.
+A personal infrastructure project that repurposes a **Samsung Galaxy Book Flex** into an **Ubuntu Server** NAS and application host. It combines network file sharing, a self-hosted portfolio, graphical administration, and separate paths for private management and web access.
 
-## Project status
+[Project case study](case-study.md) · [Architecture](architecture.md) · [Troubleshooting](troubleshooting.md) · [Roadmap](roadmap.md)
 
-This is a sanitized portfolio record of the setup reported in the original project discussion. It is **not a live audit of the server** or a complete deployment bundle. The available discussion includes a corrected Homepage configuration excerpt; several other accomplishments are recorded in the prior project summary rather than independently measured here. Exact software versions, disk sizes, and current access policies remain to be verified.
+---
 
-| Area | Recorded implementation |
-| --- | --- |
-| Host | Samsung Galaxy Book Flex running Ubuntu Server |
-| Storage | LVM separation for OS, Docker, NAS data, and websites |
-| Containers | Docker with Dockge for graphical Compose stack management |
-| Host administration | Cockpit and SSH |
-| Dashboard | Homepage with service shortcuts and container status entries |
-| File sharing | Samba and FileBrowser Quantum |
-| Private remote access | Tailscale |
-| Web access | Cloudflare Tunnel, custom-domain routing, and Cloudflare Access email OTP |
-| Hosting | Containerized personal portfolio website |
+## The project in 30 seconds
 
-## Architecture
+| | |
+| :--- | :--- |
+| **The need** | Centralize files, host a personal website, and manage services without relying on terminal commands for every routine task. |
+| **The build** | Ubuntu Server on reused laptop hardware, LVM storage roles, Docker applications, Samba, and browser-based management. |
+| **The access design** | Tailscale for private administration; Cloudflare Tunnel for selected web routes; Cloudflare Access for protected applications. |
+| **The learning** | Linux administration, storage organization, container operations, file permissions, access boundaries, and configuration debugging. |
+| **Project type** | Personal HomeLab implementation with sanitized engineering documentation. |
 
-```mermaid
-flowchart LR
-    Admin[Administrator] --> Tail[Tailscale private access]
-    Tail --> Host[Ubuntu Server]
-    LAN[Trusted LAN client] --> SMB[Samba]
-    Visitor[Web visitor] --> CF[Cloudflare edge]
-    CF --> Public[Public portfolio route]
-    CF --> Access[Access authentication]
-    Access --> Protected[Protected application routes]
-    Public --> Tunnel[Cloudflare Tunnel]
-    Protected --> Tunnel
-    Tunnel --> Web[Homepage / FileBrowser / Portfolio]
-    Host --> GUI[Cockpit / Dockge / SSH]
-    Host --> Docker[Docker containers]
-    Docker --> Web
-    SMB --> Data[NAS storage]
-    Web --> Data
-```
+## What the lab brings together
 
-The diagram communicates service roles and intended access boundaries; it does not expose deployment addresses or attest that every firewall rule is currently enforced. See [architecture](architecture.md).
+- **A shared file hub:** Samba for network clients and FileBrowser Quantum for browser-based file management.
+- **A home for applications:** Docker workloads managed through Dockge, including a personal portfolio website.
+- **A clearer management experience:** Cockpit for the host and Homepage as a central service directory.
+- **Two remote-access paths:** private administration through Tailscale and selected web applications through Cloudflare.
+- **A documented learning process:** practical tradeoffs, a real YAML troubleshooting case, and a staged improvement plan.
 
-## Explore the project
+## System overview
 
-- [Hardware and storage](hardware-and-storage.md)
-- [Docker, Dockge, Cockpit, and Homepage](operations.md)
-- [Samba and FileBrowser Quantum](file-services.md)
-- [Tailscale, Cloudflare Tunnel, and Access](networking.md)
-- [Security and publication boundaries](security.md)
-- [Troubleshooting and lessons learned](troubleshooting.md)
-- [Roadmap](roadmap.md)
-- [Sanitized examples](examples.md)
+![Conceptual HomeLab architecture showing separate management, file-sharing, and web-access paths](architecture.svg)
 
-## Engineering decisions
+*Conceptual architecture based on the project record. The cover is an AI-generated illustration, not a photo of the actual host. See [visual notes](visuals.md).*
 
-- Reuse existing hardware for a practical learning platform.
-- Separate storage responsibilities so application state and user files can be managed deliberately.
-- Use graphical tools for common tasks while retaining SSH for diagnosis and recovery.
-- Treat private administration and browser-based application access as different access paths.
-- Keep actual deployment configuration and secrets outside the public repository.
+## Technical skills in context
 
-## Using this repository
+| Skill area | How it appears in the project | Explore |
+| :--- | :--- | :--- |
+| Linux administration | Headless Ubuntu host, SSH, service inspection, Cockpit | [Operations](operations.md) |
+| Storage design | Separate LVM responsibilities for OS, Docker, NAS, and websites | [Hardware & storage](hardware-and-storage.md) |
+| Container operations | Docker applications and Compose stack management with Dockge | [Service catalog](service-catalog.md) |
+| File services | Network shares, browser access, and permission boundaries | [Samba & FileBrowser](file-services.md) |
+| Networking & access | Tailscale, Cloudflare Tunnel, and Access authentication | [Networking](networking.md) |
+| Troubleshooting | Diagnosed an appended YAML line and corrected the intended service block | [Incident case study](troubleshooting.md) |
+| Technical communication | Architecture, operating notes, safe examples, and explicit tradeoffs | [Project case study](case-study.md) |
 
-Read the architecture and security notes first. Examples use reserved domains and generic paths, are deliberately incomplete, and must be adapted and tested locally. They are **not copies of private production configuration**. No command in this repository is required to run automatically.
+## A concrete problem solved
 
-## Evidence and limitations
+When changing the NAS shortcut from a private address to a web hostname, replacement text was appended as a malformed YAML line. The correction removed that line and placed separate `href` and `ping` values inside the right service entry.
 
-The original discussion reports the services above as installed. A user-provided Homepage excerpt demonstrates the NAS shortcut correction documented in troubleshooting. No live server login, performance test, disk inventory, backup restore, or security audit was performed for this publication. Proposed improvements are kept in the roadmap.
+The project record contains the corrected configuration excerpt. [Read the root cause, corrected example, and verification steps →](troubleshooting.md)
 
-No credentials, real service domains, network addresses, personal login names, storage identifiers, or raw logs are included.
+## Read the project your way
+
+| For a quick overview | For a technical review |
+| :--- | :--- |
+| [Project story & decisions](case-study.md) | [Architecture & boundaries](architecture.md) |
+| [Service catalog](service-catalog.md) | [Hardware & LVM roles](hardware-and-storage.md) |
+| [What comes next](roadmap.md) | [Operations](operations.md) · [Networking](networking.md) |
+| [Visual guide](visuals.md) | [Examples](examples.md) · [Security](security.md) |
+
+## Next steps
+
+The next priorities are a verified hardware/version baseline, tested backup recovery, and service monitoring. A read-only NAS assistant, additional websites, Navidrome, and IoT experiments are future work. [See the staged roadmap →](roadmap.md)
+
+<details>
+<summary><strong>Evidence, scope, and privacy</strong></summary>
+
+The implemented stack is described in the original project discussion. The available evidence includes a user-provided Homepage configuration excerpt; other setup details come from the project summary. Exact versions, disk capacities, current policy enforcement, uptime, and performance were not independently measured for this publication.
+
+This repository is a portfolio case study, not an automated installer or live security assessment. Examples are authored with reserved domains and generic paths. Private hostnames, network addresses, credentials, raw logs, and private configuration exports are excluded. Planned work is labeled separately.
+
+</details>
+
+---
+
+Built as a personal learning project by [Pawan-EE](https://github.com/Pawan-EE). For technical discussion, open an issue without including private server information.

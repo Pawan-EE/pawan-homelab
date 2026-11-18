@@ -1,5 +1,7 @@
 # Private deployment worksheet
 
+[← Project overview](README.md)
+
 Copy this worksheet outside the public repository before filling it in.
 
 | Component | Verify privately |

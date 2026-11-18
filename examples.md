@@ -1,9 +1,27 @@
-# Sanitized examples
+# Examples & configuration guide
 
-These files demonstrate structure, not the live NAS configuration. Do not deploy this directory as a complete stack.
+[← Project overview](README.md)
 
-- [Homepage services](homepage-services.yaml.example): navigation-only entries using reserved domains. No Docker API or monitoring credentials are required.
-- [Samba share](samba-share.conf.example): a restrictive share fragment with a generic path and account.
-- [Deployment worksheet](deployment-worksheet.md): fields to fill privately when preparing real stacks and access routes.
+These small examples make the configuration style reviewable without publishing private deployment files.
 
-Exact Dockge, FileBrowser Quantum, and cloudflared deployment versions were unavailable. Runnable Compose files are intentionally deferred until version-specific settings and storage mappings are verified. Never fill these public templates with live secrets.
+| File | Demonstrates | Deliberately excludes |
+| --- | --- | --- |
+| [Homepage services](homepage-services.yaml.example) | Groups, descriptions, navigation links | Private addresses, Docker API integration, credentials |
+| [Samba share](samba-share.conf.example) | An authenticated, read-only share fragment | Actual users, real data paths, host-wide configuration |
+| [Deployment worksheet](deployment-worksheet.md) | A private inventory and validation checklist | Filled-in infrastructure details |
+
+## How to read the examples
+
+`example.com` is a reserved documentation domain. `exampleuser` and `/srv/example-nas` are placeholders. The Samba fragment is intentionally read-only; it is not the original share configuration.
+
+The Homepage example can explain the service-entry structure, but it does not configure application authentication. Following a link still requires whatever access the target application enforces.
+
+## Before using an example
+
+Make a private copy, adapt it to the installed version and local environment, validate the syntax, and test with disposable data and least-privilege accounts. Keep the private version outside this repository.
+
+## Why there is no one-command deployment
+
+Exact image versions, host mounts, application state paths, and live policy definitions were not available in the project record. A guessed Compose stack would be misleading and could mount the wrong data.
+
+The repository therefore documents the implementation and provides bounded examples. Version-specific stack templates can be added after the [baseline inventory](roadmap.md) is verified.

@@ -1,5 +1,7 @@
 # Security and publication boundaries
 
+[← Project overview](README.md)
+
 ## What is intentionally excluded
 
 This repository contains no actual passwords, tokens, private keys, tunnel credentials, user databases, private domains, network addresses, personal server login names, hardware identifiers, or raw configuration exports.

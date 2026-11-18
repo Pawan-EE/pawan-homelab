@@ -1,34 +1,57 @@
-# Graphical administration and containers
+# Operating the lab
+
+[← Project overview](README.md)
+
+The management layer answers three different questions: **Where is the service?** (Homepage), **What is the application doing?** (Dockge), and **What is the host doing?** (Cockpit).
+
+## Which tool to use
+
+| Task | Starting point | Check afterward |
+| --- | --- | --- |
+| Find a service | Homepage | The link reaches the intended application |
+| Inspect a Compose stack | Dockge | Container state, logs, and persistent mounts |
+| Investigate host resource use | Cockpit | Relevant service, storage, and system logs |
+| Diagnose a low-level issue | SSH | A targeted change and a recorded result |
+| Manage files in a browser | FileBrowser Quantum | User scope and file operation permissions |
+| Access a network share | Samba client | Share and filesystem authorization |
 
 ## Docker and Dockge
 
-The project record reports Docker and Dockge installed. Dockge manages Compose stacks through a web interface; use it to inspect stack state and logs and perform deliberate deployments.
+Docker and Dockge are recorded as installed. Dockge provides browser-based management of Compose stacks. Keep actual stack files and private configuration together on the host, with sanitized templates in Git.
 
-Keep each stack definition with its associated private configuration. Track sanitized templates in Git, while credentials and application databases remain outside the repository. Before an update, record the running image version, back up persistent state, inspect release notes, and retain a rollback plan. Reverting an image may not reverse a database migration.
+Treat Docker management access as privileged. Restrict Dockge to intended administrators and keep the Docker API away from unrelated applications.
 
-Docker API access can control the host. Restrict Dockge to authorized administrators over the private access path. Do not expose the Docker socket to unrelated applications.
-
-Reference: [Dockge upstream project](https://github.com/louislam/dockge).
+[Upstream Dockge documentation](https://github.com/louislam/dockge)
 
 ## Cockpit
 
-Cockpit is recorded as installed for host administration. Use its available pages to inspect services, logs, storage, updates, and resource usage; the exact installed extensions have not been inventoried. Keep host administration private and use a trusted HTTPS connection. Retain SSH as a recovery path.
+Cockpit provides graphical host administration. Use the pages available in the installed configuration to inspect services, logs, storage, updates, and resources. The project's exact extensions are not inventoried here.
+
+Keep administration on the private path and use a trusted HTTPS connection. SSH remains useful when the graphical interface cannot explain or recover a failure.
 
 ## Homepage
 
-Homepage centralizes service links. The discussion includes entries for the portfolio and FileBrowser Quantum, plus Docker status fields. The sanitized example intentionally omits Docker integration and live monitoring so it does not require socket access or private credentials.
+Homepage acts as the service directory. The project discussion contains portfolio and FileBrowser entries and Docker status fields. The public [services example](homepage-services.yaml.example) uses navigation-only links so it does not need private integrations.
 
-A navigation link and a health check serve different purposes. An Access-protected URL may return a login page or redirect to an unauthenticated monitor even when the origin is healthy. Do not weaken Access just to make a dashboard indicator green.
+A shortcut and a health check serve different purposes. Access can present a login challenge to an unauthenticated monitor even when an origin is healthy.
 
-Reference: [Homepage service configuration](https://gethomepage.dev/configs/services/).
+[Upstream Homepage service configuration](https://gethomepage.dev/configs/services/)
 
-## Operational routine
+## Recommended update runbook
 
-1. Review storage capacity, failed services, container restarts, and backups.
-2. Investigate logs privately; sanitize before sharing.
-3. Back up persistent state before updates.
-4. Change one stack at a time and check application behavior.
-5. Verify private and protected access after network changes.
-6. Record the version and rollback outcome in private maintenance notes.
+This is a documented procedure to adopt, not a claim that every past update followed it.
 
-No uptime, performance, or restore success is claimed without measurement.
+1. Identify the stack, current image version, persistent data, and dependencies.
+2. Back up application state and note how recovery will work.
+3. Review release notes and any database migration requirements.
+4. Update one stack at a time through the chosen management workflow.
+5. Check logs, application behavior, file access, and intended authentication.
+6. Record the outcome and keep the previous version until validation is complete.
+
+An older image may not read a database after a migration. A rollback plan must account for data as well as the container.
+
+## When something breaks
+
+Start with the layer closest to the symptom: application, container, host, then remote path. Preserve logs privately, change one variable at a time, and test with disposable data. Avoid replacing a stack or broadening permissions before identifying the cause.
+
+[Troubleshooting →](troubleshooting.md) · [Recovery priorities →](roadmap.md)

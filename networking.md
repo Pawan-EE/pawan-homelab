@@ -1,5 +1,7 @@
 # Remote access and web publishing
 
+[← Project overview](README.md)
+
 ## Tailscale
 
 The project record reports Tailscale private networking for remote administration. Keep device names, addresses, identity details, and policy exports private. Verify which administrators and devices can reach SSH, Cockpit, and Dockge; membership alone should not substitute for deliberate access rules.
