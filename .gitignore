@@ -1,0 +1,29 @@
+# Credentials and local environment
+.env
+.env.*
+!.env.example
+secrets/
+private/
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+config.json
+# Runtime state and backups
+*.db
+*.sqlite
+*.sqlite3
+*.log
+logs/
+backups/
+*.bak
+*.tar
+*.tar.gz
+*.zip
+data/
+# Local tooling
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

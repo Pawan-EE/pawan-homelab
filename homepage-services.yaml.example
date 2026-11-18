@@ -1,0 +1,13 @@
+# Illustrative navigation only; replace reserved domains in a private copy.
+- Websites:
+    - Portfolio:
+        href: https://www.example.com
+        description: Public portfolio website
+- Storage:
+    - NAS File Manager:
+        href: https://files.example.com
+        description: Protected browser-based file access
+- Administration:
+    - HomeLab Dashboard:
+        href: https://dashboard.example.com
+        description: Protected dashboard

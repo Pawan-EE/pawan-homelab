@@ -1,0 +1,8 @@
+# Illustrative fragment, not a complete smb.conf.
+# The path and account are placeholders; prepare them privately before use.
+[NAS-Example]
+    path = /srv/example-nas
+    browseable = yes
+    read only = yes
+    guest ok = no
+    valid users = exampleuser
